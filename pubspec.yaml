@@ -32,6 +32,8 @@ dependencies:
   path: any
   intl: ^0.16.1
   path_provider: ^1.6.7
+  rxdart: ^0.24.0
+  shared_preferences: ^0.5.7+2
 
 dev_dependencies:
   flutter_test:

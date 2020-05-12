@@ -22,9 +22,7 @@ class _SQLDemoState extends State<SQLDemo> {
         fullscreenDialog: true,
       ),
     );
-    setState(() {
-      futureNote = sqlHelper.fetchNotes();
-    });
+    updateUI();
   }
 
   // Update note in db
@@ -37,9 +35,7 @@ class _SQLDemoState extends State<SQLDemo> {
         fullscreenDialog: true,
       ),
     );
-    setState(() {
-      futureNote = sqlHelper.fetchNotes();
-    });
+    updateUI();
   }
 
   // Delete note in db
@@ -47,10 +43,14 @@ class _SQLDemoState extends State<SQLDemo> {
     if (await Confirm().show(
         context: context, description: 'Do you want to delete this note ?')) {
       await sqlHelper.deleteNote(note.id);
-      setState(() {
-        futureNote = sqlHelper.fetchNotes();
-      });
+      updateUI();
     }
+  }
+
+  void updateUI() {
+    setState(() {
+      futureNote = sqlHelper.fetchNotes();
+    });
   }
 
   // All Notes from db
@@ -61,6 +61,7 @@ class _SQLDemoState extends State<SQLDemo> {
       itemBuilder: (context, index) {
         Note note = notes[index];
         return ListTile(
+          isThreeLine: true,
           title: Text(note.title),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,7 +103,9 @@ class _SQLDemoState extends State<SQLDemo> {
         );
       },
       separatorBuilder: (context, index) {
-        return Divider();
+        return Divider(
+          height: 1,
+        );
       },
     );
   }

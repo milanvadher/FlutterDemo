@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
@@ -21,7 +22,7 @@ class SQLHelper {
   SQLHelper._privateConstructor();
   static final SQLHelper instance = SQLHelper._privateConstructor();
 
-  // this return database 
+  // this return database
   Future<Database> get database async {
     if (_database != null) return _database;
     _database = await initDatabase();
@@ -60,6 +61,10 @@ class SQLHelper {
     // Get a reference to the database.
     final Database db = await instance.database;
 
+    String now = DateFormat('dd-MM-yyyy HH:mm:ss').format(DateTime.now());
+    note.createdAt = now;
+    note.updatedAt = now;
+
     // Insert the Note into the correct table. You might also specify the
     // `conflictAlgorithm` to use in case the same note is inserted twice.
     //
@@ -75,6 +80,8 @@ class SQLHelper {
   Future<void> updateNote(Note note) async {
     // Get a reference to the database.
     final Database db = await instance.database;
+
+    note.updatedAt = DateFormat('dd-MM-yyyy HH:mm:ss').format(DateTime.now());
 
     // Update the given Note.
     await db.update(
@@ -104,7 +111,8 @@ class SQLHelper {
     // Get a reference to the database.
     final Database db = await instance.database;
     // Query the table for all The Notes.
-    final List<Map<String, dynamic>> maps = await db.query(tableName, orderBy: '$columnUpdatedAt DESC');
+    final List<Map<String, dynamic>> maps =
+        await db.query(tableName, orderBy: '$columnUpdatedAt DESC');
     // Convert the List<Map<String, dynamic> into a List<Note>.
     return List.generate(maps.length, (i) {
       return Note(

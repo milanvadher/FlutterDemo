@@ -5,18 +5,16 @@ class Note {
   final int id;
   final String title;
   final String discription;
-  final String createdAt;
-  final String updatedAt;
+  String createdAt;
+  String updatedAt;
 
   Note({
     this.id,
     @required this.title,
     this.discription,
-    @required this.createdAt,
-    @required this.updatedAt,
-  })  : assert(title != null),
-        assert(createdAt != null),
-        assert(updatedAt != null);
+    this.createdAt,
+    this.updatedAt,
+  })  : assert(title != null);
 
   // Convert a Note into a Map. The keys must correspond to the names of the
   // columns in the database.

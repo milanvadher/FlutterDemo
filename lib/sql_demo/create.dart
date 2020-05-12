@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'note.model.dart';
 import 'sql.helper.dart';
 
@@ -25,12 +24,9 @@ class _CreateNoteState extends State<CreateNote> {
     try {
       if (_formKey.currentState.validate()) {
         _formKey.currentState.save();
-        DateTime now = DateTime.now();
         Note note = Note(
           title: title,
-          discription: discription,
-          createdAt: DateFormat('dd-MM-yyyy kk:mm').format(now),
-          updatedAt: DateFormat('dd-MM-yyyy kk:mm').format(now),
+          discription: discription
         );
         await sqlHelper.insertNote(note);
         Navigator.of(context).pop();
@@ -45,13 +41,11 @@ class _CreateNoteState extends State<CreateNote> {
     try {
       if (_formKey.currentState.validate()) {
         _formKey.currentState.save();
-        DateTime now = DateTime.now();
         Note note = Note(
           id: widget.note.id,
           title: title,
           discription: discription,
           createdAt: widget.note.createdAt,
-          updatedAt: DateFormat('dd-MM-yyyy kk:mm').format(now),
         );
         await sqlHelper.updateNote(note);
         Navigator.of(context).pop();
