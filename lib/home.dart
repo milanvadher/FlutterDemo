@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_demo/menu.modal.dart';
 import 'package:flutter_demo/settings.dart';
-import './networking_demo/networking_demo.dart';
+import './firebase_demo/firebase_demo.dart';
 import './sql_demo/sql_demo.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,11 +12,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<Menu> menu = [
     Menu(
-      title: 'Networking Demo',
-      icon: Icons.network_check,
-      routeTo: NetworkingDemo(),
-      lightColor: Colors.teal,
-      darkColor: Colors.tealAccent,
+      title: 'Firebase',
+      icon: Icons.group_work,
+      routeTo: FirebaseDemo(),
+      lightColor: Colors.orange,
+      darkColor: Colors.orangeAccent,
     ),
     Menu(
       title: 'SQL Demo',
