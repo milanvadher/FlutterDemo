@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter_demo/firebase_demo/firestore.service.dart';
 
 class NoteFirebase {
   final String firebasseId;
@@ -19,11 +20,11 @@ class NoteFirebase {
   // columns in the database.
   Map<String, dynamic> toMap() {
     return {
-      'firebaseId': firebasseId,
-      'title': title,
-      'discription': discription,
-      'createdAt': createdAt,
-      'updatedAt': updatedAt,
+      FirestoreService.columnId: firebasseId,
+      FirestoreService.columnTitle: title,
+      FirestoreService.columnDiscription: discription,
+      FirestoreService.columnCreatedAt: createdAt,
+      FirestoreService.columnUpdatedAt: updatedAt,
     };
   }
 }

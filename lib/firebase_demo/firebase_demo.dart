@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo/common/confirm_dialog.dart';
 import 'package:flutter_demo/firebase_demo/NoteFirebase.dart';
 import 'package:flutter_demo/firebase_demo/auth.service.dart';
-import 'package:flutter_demo/firebase_demo/crete.dart';
+import 'package:flutter_demo/firebase_demo/firebase_create.dart';
 import 'package:flutter_demo/firebase_demo/firestore.service.dart';
 import 'package:flutter_demo/firebase_demo/google_button.dart';
 
@@ -14,6 +16,7 @@ class FirebaseDemo extends StatefulWidget {
 
 class _FirebaseDemoState extends State<FirebaseDemo> {
   Future<List<NoteFirebase>> fetchNotes;
+  StreamSubscription<FirebaseUser> streamSubscription;
 
   void onCreateNote() async {
     await Navigator.of(context).push(
@@ -22,6 +25,7 @@ class _FirebaseDemoState extends State<FirebaseDemo> {
         fullscreenDialog: true,
       ),
     );
+    loadNotes();
   }
 
   void loadNotes() async {
@@ -149,16 +153,21 @@ class _FirebaseDemoState extends State<FirebaseDemo> {
 
   initData() async {
     await AuthService.checkUserLoginStatus();
-    if (AuthService.user.value != null &&
-        AuthService.user.value.uid.isNotEmpty) {
+    streamSubscription = AuthService.user.listen((value) {
       loadNotes();
-    }
+    });
   }
 
   @override
   void initState() {
     super.initState();
     initData();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    streamSubscription?.cancel();
   }
 
   @override
@@ -200,13 +209,18 @@ class _FirebaseDemoState extends State<FirebaseDemo> {
           },
         ),
       ),
-      floatingActionButton: AuthService.user.value != null &&
-              AuthService.user.value.uid.isNotEmpty
-          ? FloatingActionButton(
+      floatingActionButton: StreamBuilder(
+        stream: AuthService.user,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return FloatingActionButton(
               onPressed: onCreateNote,
               child: Icon(Icons.add),
-            )
-          : Container(),
+            );
+          }
+          return Container();
+        },
+      ),
     );
   }
 }

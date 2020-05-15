@@ -6,6 +6,13 @@ import 'package:intl/intl.dart';
 
 class FirestoreService {
   static final Firestore _db = Firestore.instance;
+  static String userTableName = 'users';
+  static String noteTableName = 'notes';
+  static String columnId = 'firebaseId';
+  static String columnTitle = 'title';
+  static String columnDiscription = 'discription';
+  static String columnCreatedAt = 'createdAt';
+  static String columnUpdatedAt = 'updatedAt';
 
   static createNote(NoteFirebase note) async {
     FirebaseUser firebaseUser = AuthService.user.value;
@@ -15,9 +22,9 @@ class FirestoreService {
     note.updatedAt = now;
 
     await _db
-        .collection('users')
+        .collection(userTableName)
         .document(firebaseUser.uid)
-        .collection('notes')
+        .collection(noteTableName)
         .add(
           note.toMap(),
         );
@@ -30,9 +37,9 @@ class FirestoreService {
     note.updatedAt = now;
 
     await _db
-        .collection('users')
+        .collection(userTableName)
         .document(firebaseUser.uid)
-        .collection('notes')
+        .collection(noteTableName)
         .document(note.firebasseId)
         .setData(
           note.toMap(),
@@ -43,9 +50,9 @@ class FirestoreService {
     FirebaseUser firebaseUser = AuthService.user.value;
 
     await _db
-        .collection('users')
+        .collection(userTableName)
         .document(firebaseUser.uid)
-        .collection('notes')
+        .collection(noteTableName)
         .document(noteId)
         .delete();
   }
@@ -53,18 +60,20 @@ class FirestoreService {
   static Future<List<NoteFirebase>> getNotes() async {
     FirebaseUser firebaseUser = AuthService.user.value;
     QuerySnapshot qs = await _db
-        .collection('users')
+        .collection(userTableName)
         .document(firebaseUser.uid)
-        .collection('notes')
+        .collection(noteTableName)
+        .orderBy(columnUpdatedAt, descending: true)
         .getDocuments();
 
-    return List.generate(qs.documents.toList().length, (i) {
+    return List.generate(qs.documents.length, (i) {
+      DocumentSnapshot documentSnapshot = qs.documents[i];
       return NoteFirebase(
-        firebasseId: qs.documents.toList()[i].documentID,
-        title: qs.documents.toList()[i].data['title'],
-        discription: qs.documents.toList()[i].data['discription'],
-        createdAt: qs.documents.toList()[i].data['createdAt'],
-        updatedAt: qs.documents.toList()[i].data['updatedAt'],
+        firebasseId: documentSnapshot.documentID,
+        title: documentSnapshot.data[columnTitle],
+        discription: documentSnapshot.data[columnDiscription],
+        createdAt: documentSnapshot.data[columnCreatedAt],
+        updatedAt: documentSnapshot.data[columnUpdatedAt],
       );
     }).toList();
   }
