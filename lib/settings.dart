@@ -1,9 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo/settings.bloc.dart';
-
-import 'firebase_demo/auth.service.dart';
-import 'firebase_demo/google_button.dart';
+import 'google_login/auth.service.dart';
+import 'google_login/google_button.dart';
 
 class Settings extends StatefulWidget {
   @override

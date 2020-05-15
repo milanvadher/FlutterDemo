@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_demo/firebase_demo/NoteFirebase.dart';
-import 'package:flutter_demo/firebase_demo/firestore.service.dart';
+import 'NoteFirebase.dart';
+import 'firestore.service.dart';
 
 class FirebaseCreateNote extends StatefulWidget {
   final NoteFirebase note;

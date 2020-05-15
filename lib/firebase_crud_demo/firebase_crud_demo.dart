@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo/common/confirm_dialog.dart';
-import 'package:flutter_demo/firebase_demo/NoteFirebase.dart';
-import 'package:flutter_demo/firebase_demo/auth.service.dart';
-import 'package:flutter_demo/firebase_demo/firebase_create.dart';
-import 'package:flutter_demo/firebase_demo/firestore.service.dart';
-import 'package:flutter_demo/firebase_demo/google_button.dart';
+import 'package:flutter_demo/google_login/auth.service.dart';
+import 'package:flutter_demo/google_login/google_button.dart';
+import 'NoteFirebase.dart';
+import 'firebase_create.dart';
+import 'firestore.service.dart';
 
 class FirebaseDemo extends StatefulWidget {
   @override
@@ -154,7 +154,9 @@ class _FirebaseDemoState extends State<FirebaseDemo> {
   initData() async {
     await AuthService.checkUserLoginStatus();
     streamSubscription = AuthService.user.listen((value) {
-      loadNotes();
+      if (value != null) {
+        loadNotes();
+      }
     });
   }
 

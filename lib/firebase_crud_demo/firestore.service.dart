@@ -1,12 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_demo/firebase_demo/NoteFirebase.dart';
-import 'package:flutter_demo/firebase_demo/auth.service.dart';
+import 'package:flutter_demo/google_login/auth.service.dart';
+import 'NoteFirebase.dart';
 import 'package:intl/intl.dart';
 
 class FirestoreService {
   static final Firestore _db = Firestore.instance;
-  static String userTableName = 'users';
   static String noteTableName = 'notes';
   static String columnId = 'firebaseId';
   static String columnTitle = 'title';
@@ -22,7 +21,7 @@ class FirestoreService {
     note.updatedAt = now;
 
     await _db
-        .collection(userTableName)
+        .collection(noteTableName)
         .document(firebaseUser.uid)
         .collection(noteTableName)
         .add(
@@ -37,7 +36,7 @@ class FirestoreService {
     note.updatedAt = now;
 
     await _db
-        .collection(userTableName)
+        .collection(noteTableName)
         .document(firebaseUser.uid)
         .collection(noteTableName)
         .document(note.firebasseId)
@@ -50,7 +49,7 @@ class FirestoreService {
     FirebaseUser firebaseUser = AuthService.user.value;
 
     await _db
-        .collection(userTableName)
+        .collection(noteTableName)
         .document(firebaseUser.uid)
         .collection(noteTableName)
         .document(noteId)
@@ -60,7 +59,7 @@ class FirestoreService {
   static Future<List<NoteFirebase>> getNotes() async {
     FirebaseUser firebaseUser = AuthService.user.value;
     QuerySnapshot qs = await _db
-        .collection(userTableName)
+        .collection(noteTableName)
         .document(firebaseUser.uid)
         .collection(noteTableName)
         .orderBy(columnUpdatedAt, descending: true)

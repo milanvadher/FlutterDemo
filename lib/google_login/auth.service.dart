@@ -1,10 +1,17 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_demo/firebase_demo/firestore.service.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rxdart/rxdart.dart';
 
 class AuthService {
+  static String userTableName = 'users';
+  static String columnUid = 'uid';
+  static String columnDisplayName = 'displayName';
+  static String columnEmail = 'email';
+  static String columnPhoneNumber = 'phoneNumber';
+  static String columnPhotoUrl = 'photoUrl';
+  static String columnIsEmailVerified = 'isEmailVerified';
+
   // Dependencies
   static final FirebaseAuth _auth = FirebaseAuth.instance;
   static final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -36,15 +43,15 @@ class AuthService {
       FirebaseUser firebaseUser = authResult.user;
 
       await _db
-          .collection(FirestoreService.userTableName)
+          .collection(AuthService.userTableName)
           .document(firebaseUser.uid)
           .setData({
-        "uid": firebaseUser.uid,
-        "displayName": firebaseUser.displayName,
-        "email": firebaseUser.email,
-        "phoneNumber": firebaseUser.phoneNumber,
-        "photoUrl": firebaseUser.photoUrl,
-        "isEmailVerified": firebaseUser.isEmailVerified,
+        columnUid: firebaseUser.uid,
+        columnDisplayName: firebaseUser.displayName,
+        columnEmail: firebaseUser.email,
+        columnPhoneNumber: firebaseUser.phoneNumber,
+        columnPhotoUrl: firebaseUser.photoUrl,
+        columnIsEmailVerified: firebaseUser.isEmailVerified,
       });
 
       user.sink.add(firebaseUser);

@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_demo/firebase_demo/firestore.service.dart';
+import 'firestore.service.dart';
 
 class NoteFirebase {
   final String firebasseId;

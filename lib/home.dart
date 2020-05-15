@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_demo/menu.modal.dart';
 import 'package:flutter_demo/settings.dart';
-import './firebase_demo/firebase_demo.dart';
 import './sql_demo/sql_demo.dart';
+import 'firebase_chat_demo/firebase_chat_demo.dart';
+import 'firebase_crud_demo/firebase_crud_demo.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -12,7 +13,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<Menu> menu = [
     Menu(
-      title: 'Firebase',
+      title: 'Firebase CRUD',
       icon: Icons.group_work,
       routeTo: FirebaseDemo(),
       lightColor: Colors.orange,
@@ -24,6 +25,13 @@ class _HomePageState extends State<HomePage> {
       routeTo: SQLDemo(),
       lightColor: Colors.purple,
       darkColor: Colors.purpleAccent,
+    ),
+    Menu(
+      title: 'Firebase Chat',
+      icon: Icons.chat,
+      routeTo: FirebaseChatDemo(),
+      lightColor: Colors.teal,
+      darkColor: Colors.tealAccent,
     ),
   ];
 
