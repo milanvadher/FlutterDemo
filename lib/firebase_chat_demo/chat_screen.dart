@@ -20,6 +20,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _textController = TextEditingController();
   BehaviorSubject<bool> _isComposing = new BehaviorSubject();
+  final bool isDarkTheme = SettingsBloc.isDarkTheme.value ?? false;
 
   _onTextMsgSubmitted(String text) async {
     print(text);
@@ -131,6 +132,11 @@ class _ChatScreenState extends State<ChatScreen> {
                       isSendByMe ? WrapAlignment.end : WrapAlignment.start,
                   children: <Widget>[
                     Card(
+                      color: isSendByMe
+                          ? isDarkTheme
+                              ? Colors.teal.shade900
+                              : Colors.green.shade100
+                          : null,
                       child: Container(
                         padding: EdgeInsets.fromLTRB(10, 10, 10, 8),
                         child: Column(
@@ -167,15 +173,11 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Widget backgroundImage() {
-    bool isDarkTheme = SettingsBloc.isDarkTheme.value ?? false;
     return SizedBox.expand(
-      child: Opacity(
-        opacity: isDarkTheme ? 0.2 : 1,
-        child: Image(
-          fit: BoxFit.cover,
-          image: AssetImage(
-            isDarkTheme ? 'assets/dark_bg.png' : 'assets/light_bg.png',
-          ),
+      child: Image(
+        fit: BoxFit.cover,
+        image: AssetImage(
+          isDarkTheme ? 'assets/dark_bg.png' : 'assets/light_bg.png',
         ),
       ),
     );
