@@ -109,7 +109,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Widget conversationUI() {
     return StreamBuilder(
-      stream: FirebaseChat.getMsgRef,
+      stream: FirebaseChat.getMessages(widget.user),
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasData) {
           return ListView.builder(

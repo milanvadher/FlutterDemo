@@ -17,10 +17,9 @@ class _FirebaseChatDemoState extends State<FirebaseChatDemo> {
   StreamSubscription<FirebaseUser> streamSubscription;
 
   Widget userList(List<DocumentSnapshot> documentSnapshot) {
-    documentSnapshot.removeWhere(
-      (element) =>
-          element.data[AuthService.columnUid] == AuthService.user.value.uid,
-    );
+    documentSnapshot.removeWhere((element) =>
+        element.data[AuthService.columnUid] == AuthService.user.value.uid);
+
     if (documentSnapshot.length > 0) {
       return ListView.separated(
         padding: EdgeInsets.symmetric(vertical: 10),

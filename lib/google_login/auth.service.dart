@@ -11,6 +11,7 @@ class AuthService {
   static String columnPhoneNumber = 'phoneNumber';
   static String columnPhotoUrl = 'photoUrl';
   static String columnIsEmailVerified = 'isEmailVerified';
+  static String columnTimestamp = 'timestamp';
 
   // Dependencies
   static final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -52,6 +53,7 @@ class AuthService {
         columnPhoneNumber: firebaseUser.phoneNumber,
         columnPhotoUrl: firebaseUser.photoUrl,
         columnIsEmailVerified: firebaseUser.isEmailVerified,
+        columnTimestamp: DateTime.now().millisecondsSinceEpoch,
       });
 
       user.sink.add(firebaseUser);

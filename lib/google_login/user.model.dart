@@ -9,6 +9,7 @@ class User {
   final String phoneNumber;
   final String photoUrl;
   final bool isEmailVerified;
+  final int timestamp; 
 
   User({
     this.uid,
@@ -17,6 +18,7 @@ class User {
     this.phoneNumber,
     this.photoUrl,
     this.isEmailVerified,
+    this.timestamp,
   }) : assert(displayName != null);
 
   // Convert a User into a Map. The keys must correspond to the names of the
@@ -29,6 +31,7 @@ class User {
       AuthService.columnPhoneNumber: phoneNumber,
       AuthService.columnPhotoUrl: photoUrl,
       AuthService.columnIsEmailVerified: isEmailVerified,
+      AuthService.columnTimestamp: timestamp,
     };
   }
 
@@ -40,6 +43,7 @@ class User {
       phoneNumber: documentSnapshot.data[AuthService.columnPhoneNumber],
       photoUrl: documentSnapshot.data[AuthService.columnPhotoUrl],
       isEmailVerified: documentSnapshot.data[AuthService.columnIsEmailVerified],
+      timestamp: documentSnapshot.data[AuthService.columnTimestamp],
     );
   }
 }
