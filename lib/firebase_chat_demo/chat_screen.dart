@@ -131,33 +131,42 @@ class _ChatScreenState extends State<ChatScreen> {
                   alignment:
                       isSendByMe ? WrapAlignment.end : WrapAlignment.start,
                   children: <Widget>[
-                    Card(
-                      color: isSendByMe
-                          ? isDarkTheme
-                              ? Colors.teal.shade900
-                              : Colors.green.shade100
-                          : null,
-                      child: Container(
-                        padding: EdgeInsets.fromLTRB(10, 10, 10, 8),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(message.senderMessage),
-                            Container(
-                              padding: EdgeInsets.only(top: 5),
-                              child: Text(
-                                '${DateFormat('KK:mm aa').format(DateTime.fromMillisecondsSinceEpoch(message.timestamp))}',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .caption
-                                    .copyWith(
-                                      fontSize: 10,
-                                    ),
-                              ),
+                    Column(
+                      crossAxisAlignment: isSendByMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Card(
+                          color: isSendByMe
+                              ? isDarkTheme
+                                  ? Colors.teal.shade900
+                                  : Colors.green.shade100
+                              : null,
+                          child: Container(
+                            padding: EdgeInsets.fromLTRB(10, 6, 10, 6),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Flexible(
+                                  child: Text(message.senderMessage),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
-                      ),
+                        Container(
+                          padding: EdgeInsets.only(
+                            left: 5,
+                            right: 5
+                          ),
+                          child: Text(
+                            '${DateFormat('KK:mm aa').format(DateTime.fromMillisecondsSinceEpoch(message.timestamp))}',
+                            style: Theme.of(context)
+                                .textTheme
+                                .caption
+                                .copyWith(fontSize: 10),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -209,17 +218,17 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
       ),
       body: SafeArea(
-        child: Column(
+        child: Stack(
           children: <Widget>[
-            Expanded(
-              child: Stack(
-                children: <Widget>[
-                  backgroundImage(),
-                  conversationUI(),
-                ],
-              ),
+            backgroundImage(),
+            Column(
+              children: <Widget>[
+                Expanded(
+                  child: conversationUI(),
+                ),
+                composeMsg(),
+              ],
             ),
-            composeMsg(),
           ],
         ),
       ),
