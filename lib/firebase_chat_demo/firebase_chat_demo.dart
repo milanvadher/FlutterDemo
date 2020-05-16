@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo/firebase_chat_demo/chat.service.dart';
@@ -14,74 +15,62 @@ class FirebaseChatDemo extends StatefulWidget {
 
 class _FirebaseChatDemoState extends State<FirebaseChatDemo> {
   StreamSubscription<FirebaseUser> streamSubscription;
-  Future<List<User>> fetchUsers;
 
-  loadUsers() async {
-    setState(() {
-      fetchUsers = FirebaseChat.getUsers();
-    });
-  }
-
-  initData() async {
-    await AuthService.checkUserLoginStatus();
-    streamSubscription = AuthService.user.listen((value) {
-      if (value != null) {
-        loadUsers();
-      }
-    });
-  }
-
-  Widget userList(List<User> users) {
-    return ListView.separated(
-      padding: EdgeInsets.symmetric(vertical: 10),
-      itemCount: users.length,
-      itemBuilder: (context, index) {
-        User user = users[index];
-        return ListTile(
-          leading: Hero(
-            tag: user.uid,
-            child: CircleAvatar(
-              backgroundImage: NetworkImage(user.photoUrl),
-            ),
-          ),
-          title: Text(user.displayName),
-          subtitle: Text(
-            user.email,
-            maxLines: 1,
-            overflow: TextOverflow.clip,
-          ),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ChatScreen(user: user),
+  Widget userList(List<DocumentSnapshot> documentSnapshot) {
+    documentSnapshot.removeWhere(
+      (element) =>
+          element.data[AuthService.columnUid] == AuthService.user.value.uid,
+    );
+    if (documentSnapshot.length > 0) {
+      return ListView.separated(
+        padding: EdgeInsets.symmetric(vertical: 10),
+        itemCount: documentSnapshot.length,
+        itemBuilder: (context, index) {
+          User user = User.toJson(documentSnapshot[index]);
+          return ListTile(
+            leading: Hero(
+              tag: user.uid,
+              child: CircleAvatar(
+                backgroundImage: NetworkImage(user.photoUrl),
               ),
-            );
-          },
-        );
-      },
-      separatorBuilder: (context, index) {
-        return Divider(
-          height: 1,
-        );
-      },
+            ),
+            title: Text(user.displayName),
+            subtitle: Text(
+              user.email,
+              maxLines: 1,
+              overflow: TextOverflow.clip,
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ChatScreen(user: user),
+                ),
+              );
+            },
+          );
+        },
+        separatorBuilder: (context, index) {
+          return Divider(
+            height: 1,
+          );
+        },
+      );
+    }
+    return Center(
+      child: Text(
+        'No Users available !!!',
+        style: Theme.of(context).textTheme.headline5,
+      ),
     );
   }
 
   Widget showUsers() {
-    return FutureBuilder(
-      future: fetchUsers,
-      builder: (context, AsyncSnapshot<List<User>> snapshot) {
+    return StreamBuilder(
+      stream: FirebaseChat.getUserRef,
+      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasData) {
-          if (snapshot.data.length > 0) {
-            return userList(snapshot.data);
-          }
-          return Center(
-            child: Text(
-              'No Users available !!!',
-              style: Theme.of(context).textTheme.headline5,
-            ),
-          );
+          return userList(snapshot.data.documents);
         } else if (snapshot.hasError) {
           return Center(
             child: Text(snapshot.error),
@@ -97,13 +86,13 @@ class _FirebaseChatDemoState extends State<FirebaseChatDemo> {
   @override
   void initState() {
     super.initState();
-    initData();
+    AuthService.checkUserLoginStatus();
   }
 
   @override
   void dispose() {
     super.dispose();
-    streamSubscription.cancel();
+    streamSubscription?.cancel();
   }
 
   @override

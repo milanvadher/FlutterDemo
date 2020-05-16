@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_demo/google_login/auth.service.dart';
 
@@ -29,5 +30,16 @@ class User {
       AuthService.columnPhotoUrl: photoUrl,
       AuthService.columnIsEmailVerified: isEmailVerified,
     };
+  }
+
+  static User toJson(DocumentSnapshot documentSnapshot) {
+    return User(
+      uid: documentSnapshot.data[AuthService.columnUid],
+      displayName: documentSnapshot.data[AuthService.columnDisplayName],
+      email: documentSnapshot.data[AuthService.columnEmail],
+      phoneNumber: documentSnapshot.data[AuthService.columnPhoneNumber],
+      photoUrl: documentSnapshot.data[AuthService.columnPhotoUrl],
+      isEmailVerified: documentSnapshot.data[AuthService.columnIsEmailVerified],
+    );
   }
 }
