@@ -29,6 +29,7 @@ class _ChatScreenState extends State<ChatScreen> {
     print(text);
     if (text.isNotEmpty) {
       _textController.clear();
+      _isComposing.sink.add(false);
       Message message = Message(
         senderUid: AuthService.user.value.uid,
         receiverUid: widget.user.uid,
@@ -39,9 +40,9 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  Future chooseImage() async {
+  Future chooseImage({bool isCamera = false}) async {
     File image = await ImagePicker.pickImage(
-      source: ImageSource.gallery,
+      source: isCamera ? ImageSource.camera : ImageSource.gallery,
       maxHeight: 800,
       maxWidth: 600,
       imageQuality: 50,
@@ -78,10 +79,35 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Widget composeMsg() {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 5),
+      margin: EdgeInsets.only(top: 5),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+      ),
+      width: double.infinity,
+      height: 50.0,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
+          Material(
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 2.0),
+              child: IconButton(
+                icon: Icon(Icons.camera_alt),
+                onPressed: () {
+                  chooseImage(isCamera: true);
+                },
+              ),
+            ),
+          ),
+          Material(
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 2.0),
+              child: IconButton(
+                icon: Icon(Icons.add_photo_alternate),
+                onPressed: chooseImage,
+              ),
+            ),
+          ),
           Flexible(
             child: Container(
               margin: EdgeInsets.only(left: 5),
@@ -92,18 +118,8 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
               child: TextField(
                 controller: _textController,
-                decoration: InputDecoration(
-                  filled: true,
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 0, horizontal: 5),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(50.0),
-                  ),
+                decoration: InputDecoration.collapsed(
                   hintText: 'Type a message',
-                  prefixIcon: IconButton(
-                    icon: Icon(Icons.add_photo_alternate),
-                    onPressed: chooseImage,
-                  ),
                 ),
                 onChanged: (String text) {
                   _isComposing.sink.add(text.length > 0);
@@ -112,16 +128,15 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ),
           ),
-          Container(
-            margin: EdgeInsets.only(left: 5, right: 5),
-            child: CircleAvatar(
-              radius: 25,
+          Material(
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 2.0),
               child: StreamBuilder(
                 stream: _isComposing,
                 initialData: false,
                 builder: (context, snapshot) {
-                  return FloatingActionButton(
-                    child: Icon(Icons.send),
+                  return IconButton(
+                    icon: Icon(Icons.send),
                     onPressed: snapshot.data
                         ? () => _onTextMsgSubmitted(_textController.text)
                         : null,
