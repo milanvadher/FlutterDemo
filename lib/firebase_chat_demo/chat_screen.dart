@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo/firebase_chat_demo/image_preview.dart';
@@ -93,7 +94,8 @@ class _ChatScreenState extends State<ChatScreen> {
                 controller: _textController,
                 decoration: InputDecoration(
                   filled: true,
-                  contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 5),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 0, horizontal: 5),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(50.0),
                   ),
@@ -146,8 +148,17 @@ class _ChatScreenState extends State<ChatScreen> {
                     child: Center(
                       child: Hero(
                         tag: message.timestamp,
-                        child: Image(
-                          image: NetworkImage(message.photoUrl),
+                        child: CachedNetworkImage(
+                          imageUrl: message.photoUrl,
+                          placeholder: (context, url) => Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                          errorWidget: (context, url, error) => Center(
+                            child: Icon(
+                              Icons.error,
+                              color: Colors.redAccent,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -160,12 +171,35 @@ class _ChatScreenState extends State<ChatScreen> {
             borderRadius: BorderRadius.circular(4.0),
             child: Hero(
               tag: message.timestamp,
-              child: Image(
+              child: CachedNetworkImage(
                 width: 250,
                 height: 250,
                 fit: BoxFit.cover,
                 filterQuality: FilterQuality.low,
-                image: NetworkImage(message.photoUrl),
+                imageUrl: message.photoUrl,
+                placeholder: (context, url) => Container(
+                  width: 250,
+                  height: 250,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+                errorWidget: (context, url, error) => Container(
+                  width: 250,
+                  height: 250,
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Icon(Icons.error, color: Colors.redAccent, size: 30),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text('Failed to load Image'),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
