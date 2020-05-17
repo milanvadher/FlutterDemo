@@ -6,7 +6,6 @@ import 'package:flutter_demo/google_login/user.model.dart';
 import 'package:flutter_demo/settings.bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:rxdart/subjects.dart';
-
 import 'chat.service.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -107,70 +106,70 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
+  Widget messageBubble(QuerySnapshot querySnapshot, int index) {
+    Message message = Message.toJson(
+      querySnapshot.documents[index],
+    );
+    bool isSendByMe = message.senderUid == AuthService.user.value.uid;
+    return Container(
+      margin: EdgeInsets.only(
+        left: isSendByMe ? 60 : 10,
+        bottom: 0,
+        right: isSendByMe ? 10 : 60,
+      ),
+      child: Wrap(
+        crossAxisAlignment: WrapCrossAlignment.start,
+        alignment: isSendByMe ? WrapAlignment.end : WrapAlignment.start,
+        children: <Widget>[
+          Column(
+            crossAxisAlignment:
+                isSendByMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+            children: <Widget>[
+              Card(
+                color: isSendByMe
+                    ? isDarkTheme ? Colors.teal.shade900 : Colors.green.shade100
+                    : null,
+                child: Container(
+                  padding: EdgeInsets.fromLTRB(8, 6, 8, 6),
+                  child: Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.end,
+                    alignment: WrapAlignment.end,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.zero,
+                        child: Text(message.senderMessage),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 5, top: 5),
+                        child: Text(
+                          '${DateFormat('KK:mm aa').format(DateTime.fromMillisecondsSinceEpoch(message.timestamp))}',
+                          style: Theme.of(context)
+                              .textTheme
+                              .caption
+                              .copyWith(fontSize: 10),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget conversationUI() {
     return StreamBuilder(
-      stream: FirebaseChat.getMessages(widget.user),
+      stream: FirebaseChat.getMessages(),
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasData) {
           return ListView.builder(
             reverse: true,
             itemCount: snapshot.data.documents.length,
             itemBuilder: (context, int index) {
-              Message message = Message.toJson(
-                snapshot.data.documents[index],
-              );
-              bool isSendByMe = message.senderUid == AuthService.user.value.uid;
-              return Container(
-                margin: EdgeInsets.only(
-                  left: isSendByMe ? 60 : 10,
-                  bottom: 2,
-                  right: isSendByMe ? 10 : 60,
-                ),
-                child: Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.start,
-                  alignment:
-                      isSendByMe ? WrapAlignment.end : WrapAlignment.start,
-                  children: <Widget>[
-                    Column(
-                      crossAxisAlignment: isSendByMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Card(
-                          color: isSendByMe
-                              ? isDarkTheme
-                                  ? Colors.teal.shade900
-                                  : Colors.green.shade100
-                              : null,
-                          child: Container(
-                            padding: EdgeInsets.fromLTRB(10, 6, 10, 6),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Flexible(
-                                  child: Text(message.senderMessage),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.only(
-                            left: 5,
-                            right: 5
-                          ),
-                          child: Text(
-                            '${DateFormat('KK:mm aa').format(DateTime.fromMillisecondsSinceEpoch(message.timestamp))}',
-                            style: Theme.of(context)
-                                .textTheme
-                                .caption
-                                .copyWith(fontSize: 10),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              );
+              return messageBubble(snapshot.data, index);
             },
           );
         }
