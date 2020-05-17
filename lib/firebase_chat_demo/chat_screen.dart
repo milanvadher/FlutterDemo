@@ -194,12 +194,17 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
+    FirebaseChat.conversationId = FirebaseChat.setOneToOneChat(
+      AuthService.user.value.uid,
+      widget.user.uid,
+    );
     _isComposing.sink.add(false);
   }
 
   @override
   void dispose() {
     super.dispose();
+    FirebaseChat.conversationId = null;
     _isComposing.close();
   }
 
