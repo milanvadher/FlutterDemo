@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_demo/firebase_chat_demo/image_preview.dart';
 import 'package:flutter_demo/firebase_chat_demo/message.modal.dart';
 import 'package:flutter_demo/google_login/auth.service.dart';
 import 'package:flutter_demo/google_login/user.model.dart';
@@ -7,6 +9,7 @@ import 'package:flutter_demo/settings.bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:rxdart/subjects.dart';
 import 'chat.service.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ChatScreen extends StatefulWidget {
   final User user;
@@ -32,6 +35,30 @@ class _ChatScreenState extends State<ChatScreen> {
         timestamp: DateTime.now().millisecondsSinceEpoch,
       );
       await FirebaseChat.sendMessage(message);
+    }
+  }
+
+  Future chooseImage() async {
+    File image = await ImagePicker.pickImage(
+      source: ImageSource.gallery,
+      maxHeight: 800,
+      maxWidth: 600,
+      imageQuality: 50,
+    );
+    if (image != null) {
+      Message message = Message(
+        senderUid: AuthService.user.value.uid,
+        receiverUid: widget.user.uid,
+        senderMessage: "",
+        timestamp: DateTime.now().millisecondsSinceEpoch,
+      );
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ImagePreview(message: message, image: image),
+          fullscreenDialog: true,
+        ),
+      );
     }
   }
 
@@ -66,14 +93,14 @@ class _ChatScreenState extends State<ChatScreen> {
                 controller: _textController,
                 decoration: InputDecoration(
                   filled: true,
-                  contentPadding: EdgeInsets.zero,
+                  contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 5),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(50.0),
                   ),
                   hintText: 'Type a message',
                   prefixIcon: IconButton(
-                    icon: Icon(Icons.tag_faces),
-                    onPressed: () {},
+                    icon: Icon(Icons.add_photo_alternate),
+                    onPressed: chooseImage,
                   ),
                 ),
                 onChanged: (String text) {
@@ -106,6 +133,74 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
+  Widget imageMessage(Message message) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: <Widget>[
+        InkWell(
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => SafeArea(
+                  child: Container(
+                    child: Center(
+                      child: Hero(
+                        tag: message.timestamp,
+                        child: Image(
+                          image: NetworkImage(message.photoUrl),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(4.0),
+            child: Hero(
+              tag: message.timestamp,
+              child: Image(
+                width: 250,
+                height: 250,
+                fit: BoxFit.cover,
+                filterQuality: FilterQuality.low,
+                image: NetworkImage(message.photoUrl),
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: 5, top: 5),
+          child: Text(
+            '${DateFormat('KK:mm aa').format(DateTime.fromMillisecondsSinceEpoch(message.timestamp))}',
+            style: Theme.of(context).textTheme.caption.copyWith(fontSize: 10),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget textMessage(Message message) {
+    return Wrap(
+      crossAxisAlignment: WrapCrossAlignment.end,
+      alignment: WrapAlignment.end,
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.only(left: 4),
+          child: Text(message.senderMessage),
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: 5, top: 5),
+          child: Text(
+            '${DateFormat('KK:mm aa').format(DateTime.fromMillisecondsSinceEpoch(message.timestamp))}',
+            style: Theme.of(context).textTheme.caption.copyWith(fontSize: 10),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget messageBubble(QuerySnapshot querySnapshot, int index) {
     Message message = Message.toJson(
       querySnapshot.documents[index],
@@ -114,7 +209,6 @@ class _ChatScreenState extends State<ChatScreen> {
     return Container(
       margin: EdgeInsets.only(
         left: isSendByMe ? 60 : 10,
-        bottom: 0,
         right: isSendByMe ? 10 : 60,
       ),
       child: Wrap(
@@ -130,27 +224,10 @@ class _ChatScreenState extends State<ChatScreen> {
                     ? isDarkTheme ? Colors.teal.shade900 : Colors.green.shade100
                     : null,
                 child: Container(
-                  padding: EdgeInsets.fromLTRB(8, 6, 8, 6),
-                  child: Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.end,
-                    alignment: WrapAlignment.end,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.zero,
-                        child: Text(message.senderMessage),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(left: 5, top: 5),
-                        child: Text(
-                          '${DateFormat('KK:mm aa').format(DateTime.fromMillisecondsSinceEpoch(message.timestamp))}',
-                          style: Theme.of(context)
-                              .textTheme
-                              .caption
-                              .copyWith(fontSize: 10),
-                        ),
-                      ),
-                    ],
-                  ),
+                  padding: EdgeInsets.all(4),
+                  child: message.photoUrl != null
+                      ? imageMessage(message)
+                      : textMessage(message),
                 ),
               ),
             ],

@@ -6,12 +6,14 @@ class Message {
   final String senderUid;
   final String receiverUid;
   final String senderMessage;
+  String photoUrl;
   final int timestamp;
 
   Message({
     @required this.senderUid,
     @required this.receiverUid,
     @required this.senderMessage,
+    this.photoUrl,
     @required this.timestamp,
   })  : assert(senderUid != null),
         assert(receiverUid != null),
@@ -25,6 +27,7 @@ class Message {
       FirebaseChat.columnSenderUid: senderUid,
       FirebaseChat.columnReceiverUid: receiverUid,
       FirebaseChat.columnSenderMessage: senderMessage,
+      FirebaseChat.columnPhotoUrl: photoUrl,
       FirebaseChat.columnTimestamp: timestamp,
     };
   }
@@ -34,6 +37,7 @@ class Message {
       senderUid: documentSnapshot.data[FirebaseChat.columnSenderUid],
       receiverUid: documentSnapshot.data[FirebaseChat.columnReceiverUid],
       senderMessage: documentSnapshot.data[FirebaseChat.columnSenderMessage],
+      photoUrl: documentSnapshot.data[FirebaseChat.columnPhotoUrl],
       timestamp: documentSnapshot.data[FirebaseChat.columnTimestamp],
     );
   }

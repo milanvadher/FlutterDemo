@@ -35,8 +35,14 @@ class _MyAppState extends State<MyApp> {
           title: 'Flutter Demo',
           home: HomePage(),
           theme: snapshot.data
-              ? ThemeData.from(colorScheme: AppTheme.darkTheme)
-              : ThemeData.from(colorScheme: AppTheme.lightTheme),
+              ? ThemeData.from(
+                  colorScheme: AppTheme.darkTheme,
+                  textTheme: TextTheme().apply(fontFamily: 'Google'),
+                )
+              : ThemeData.from(
+                  colorScheme: AppTheme.lightTheme,
+                  textTheme: TextTheme().apply(fontFamily: 'Google'),
+                ),
         );
       },
     );
