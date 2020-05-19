@@ -150,37 +150,62 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  Widget imageMessage(Message message) {
+  errorImageWidget({bool isDisplayMsg = true}) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
+      mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        InkWell(
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => SafeArea(
-                  child: Container(
-                    child: Center(
-                      child: Hero(
-                        tag: message.timestamp,
-                        child: CachedNetworkImage(
-                          imageUrl: message.photoUrl,
-                          placeholder: (context, url) => Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                          errorWidget: (context, url, error) => Center(
-                            child: Icon(
-                              Icons.error,
-                              color: Colors.redAccent,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+        Icon(Icons.error, color: Colors.redAccent, size: 30),
+        if (isDisplayMsg)
+          SizedBox(
+            height: 10,
+          ),
+        if (isDisplayMsg) Text('Failed to load Image'),
+      ],
+    );
+  }
+
+  previewImage(Message message) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => SafeArea(
+          child: Container(
+            child: Center(
+              child: Hero(
+                tag: message.timestamp,
+                child: CachedNetworkImage(
+                  imageUrl: message.photoUrl,
+                  placeholder: (context, url) => Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                  errorWidget: (context, url, error) => Center(
+                    child: errorImageWidget(isDisplayMsg: false),
                   ),
                 ),
               ),
-            );
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget timeStamp(Message message) {
+    return Padding(
+      padding: EdgeInsets.only(left: 10, top: 5),
+      child: Text(
+        '${DateFormat.jm().format(DateTime.fromMillisecondsSinceEpoch(message.timestamp))}',
+        style: Theme.of(context).textTheme.caption.copyWith(fontSize: 10),
+      ),
+    );
+  }
+
+  Widget imageMessage(Message message) {
+    return Wrap(
+      alignment: WrapAlignment.end,
+      children: <Widget>[
+        InkWell(
+          onTap: () {
+            previewImage(message);
           },
           child: ClipRRect(
             borderRadius: BorderRadius.circular(4.0),
@@ -203,29 +228,14 @@ class _ChatScreenState extends State<ChatScreen> {
                   width: 250,
                   height: 250,
                   child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Icon(Icons.error, color: Colors.redAccent, size: 30),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text('Failed to load Image'),
-                      ],
-                    ),
+                    child: errorImageWidget(),
                   ),
                 ),
               ),
             ),
           ),
         ),
-        Padding(
-          padding: EdgeInsets.only(left: 5, top: 5),
-          child: Text(
-            '${DateFormat('KK:mm aa').format(DateTime.fromMillisecondsSinceEpoch(message.timestamp))}',
-            style: Theme.of(context).textTheme.caption.copyWith(fontSize: 10),
-          ),
-        ),
+        timeStamp(message),
       ],
     );
   }
@@ -239,13 +249,7 @@ class _ChatScreenState extends State<ChatScreen> {
           padding: EdgeInsets.only(left: 4),
           child: Text(message.senderMessage),
         ),
-        Padding(
-          padding: EdgeInsets.only(left: 5, top: 5),
-          child: Text(
-            '${DateFormat('KK:mm aa').format(DateTime.fromMillisecondsSinceEpoch(message.timestamp))}',
-            style: Theme.of(context).textTheme.caption.copyWith(fontSize: 10),
-          ),
-        ),
+        timeStamp(message),
       ],
     );
   }
@@ -269,6 +273,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 isSendByMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
             children: <Widget>[
               Card(
+                margin: EdgeInsets.symmetric(vertical: 3),
                 color: isSendByMe
                     ? isDarkTheme ? Colors.teal.shade900 : Colors.green.shade100
                     : null,
