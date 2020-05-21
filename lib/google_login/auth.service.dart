@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_demo/notification/firebase_notification.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rxdart/rxdart.dart';
@@ -57,6 +58,8 @@ class AuthService {
       });
 
       user.sink.add(firebaseUser);
+
+      await FirebaseNotification.setup();
     } catch (e) {
       print('Error to Login');
       print(e);
@@ -66,6 +69,7 @@ class AuthService {
 
   static void signOutGoogle() async {
     await _auth.signOut();
+    await FirebaseNotification.unRegister();
     await googleSignIn.signOut();
     user.sink.add(null);
     user.drain();

@@ -4,6 +4,7 @@ import 'package:flutter_demo/settings.dart';
 import './sql_demo/sql_demo.dart';
 import 'firebase_chat_demo/firebase_chat_demo.dart';
 import 'firebase_crud_demo/firebase_crud_demo.dart';
+import 'local_notification_demo/local_notification_demo.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -32,6 +33,13 @@ class _HomePageState extends State<HomePage> {
       routeTo: FirebaseChatDemo(),
       lightColor: Colors.teal,
       darkColor: Colors.tealAccent,
+    ),
+    Menu(
+      title: 'Local Notification',
+      icon: Icons.notifications_active,
+      routeTo: LocalNotificationDemo(),
+      lightColor: Colors.blue,
+      darkColor: Colors.blueAccent,
     ),
   ];
 

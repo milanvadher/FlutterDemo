@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_demo/notification/firebase_notification.dart';
 import 'package:flutter_demo/settings.bloc.dart';
 import 'package:flutter_demo/theme.dart';
 import 'home.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+
+import 'notification/local_notification.dart';
 
 void main() {
   // Set `enableInDevMode` to true to see reports while in debug mode
@@ -27,6 +30,8 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     SettingsBloc.setAppThemeOnLoad();
+    FirebaseNotification.configure();
+    LocalNotification.setup();
   }
 
   @override
