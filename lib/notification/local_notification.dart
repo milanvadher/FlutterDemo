@@ -52,10 +52,6 @@ class LocalNotification {
       autoCancel: true,
       playSound: playSound,
       enableVibration: true,
-      // maxProgress: 100,
-      // progress: 40,
-      // showProgress: false,
-      // onlyAlertOnce: true,
       category: 'CATEGORY_REMINDER',
       ongoing: false,
     );

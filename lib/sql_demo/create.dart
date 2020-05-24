@@ -24,10 +24,7 @@ class _CreateNoteState extends State<CreateNote> {
     try {
       if (_formKey.currentState.validate()) {
         _formKey.currentState.save();
-        Note note = Note(
-          title: title,
-          discription: discription
-        );
+        Note note = Note(title: title, discription: discription);
         await sqlHelper.insertNote(note);
         Navigator.of(context).pop();
       }
@@ -66,7 +63,6 @@ class _CreateNoteState extends State<CreateNote> {
             padding: EdgeInsets.symmetric(vertical: 10),
             child: TextFormField(
               decoration: InputDecoration(
-                border: OutlineInputBorder(),
                 labelText: 'Title',
                 hintText: 'Note title',
               ),
@@ -90,7 +86,6 @@ class _CreateNoteState extends State<CreateNote> {
               maxLines: null,
               keyboardType: TextInputType.multiline,
               decoration: InputDecoration(
-                border: OutlineInputBorder(),
                 labelText: 'Discription',
                 hintText: 'Note discription',
               ),
@@ -121,7 +116,7 @@ class _CreateNoteState extends State<CreateNote> {
       appBar: AppBar(
         title: Text(isEditMode ? 'Update Note' : 'New Note'),
         actions: <Widget>[
-          FlatButton(
+          MaterialButton(
             onPressed: isEditMode ? onNoteUpdate : onNoteSave,
             child: Text(isEditMode ? 'UPDATE' : 'SAVE'),
           ),

@@ -47,14 +47,14 @@ class _FirebaseDemoState extends State<FirebaseDemo> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text(
-                  'No Notes available !!!',
-                  style: Theme.of(context).textTheme.headline5,
+                  'You don\'t have a Note yet',
+                  style: Theme.of(context).textTheme.headline6,
                 ),
                 SizedBox(
                   height: 10,
                 ),
                 Text(
-                  'Add new Note by click on + button',
+                  'Tap + to create one',
                   style: Theme.of(context).textTheme.bodyText2,
                 ),
               ],

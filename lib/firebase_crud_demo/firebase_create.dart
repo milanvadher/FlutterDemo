@@ -61,7 +61,6 @@ class _FirebaseCreateNoteState extends State<FirebaseCreateNote> {
             padding: EdgeInsets.symmetric(vertical: 10),
             child: TextFormField(
               decoration: InputDecoration(
-                border: OutlineInputBorder(),
                 labelText: 'Title',
                 hintText: 'Note title',
               ),
@@ -85,7 +84,6 @@ class _FirebaseCreateNoteState extends State<FirebaseCreateNote> {
               maxLines: null,
               keyboardType: TextInputType.multiline,
               decoration: InputDecoration(
-                border: OutlineInputBorder(),
                 labelText: 'Discription',
                 hintText: 'Note discription',
               ),
@@ -116,7 +114,7 @@ class _FirebaseCreateNoteState extends State<FirebaseCreateNote> {
       appBar: AppBar(
         title: Text(isEditMode ? 'Update Note' : 'New Note'),
         actions: <Widget>[
-          FlatButton(
+          MaterialButton(
             onPressed: isEditMode ? onNoteUpdate : onNoteSave,
             child: Text(isEditMode ? 'UPDATE' : 'SAVE'),
           ),

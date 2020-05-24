@@ -49,15 +49,8 @@ class _MyAppState extends State<MyApp> {
         return MaterialApp(
           title: 'Flutter Demo',
           home: HomePage(),
-          theme: snapshot.data
-              ? ThemeData.from(
-                  colorScheme: AppTheme.darkTheme,
-                  textTheme: TextTheme().apply(fontFamily: 'Google'),
-                )
-              : ThemeData.from(
-                  colorScheme: AppTheme.lightTheme,
-                  textTheme: TextTheme().apply(fontFamily: 'Google'),
-                ),
+          theme: snapshot.data ? AppTheme.darkTheme : AppTheme.lightTheme,
+          themeMode: snapshot.data ? ThemeMode.dark : ThemeMode.light,
         );
       },
     );

@@ -200,8 +200,10 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Widget imageMessage(Message message) {
-    return Wrap(
-      alignment: WrapAlignment.end,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: <Widget>[
         InkWell(
           onTap: () {
@@ -275,7 +277,9 @@ class _ChatScreenState extends State<ChatScreen> {
               Card(
                 margin: EdgeInsets.symmetric(vertical: 3),
                 color: isSendByMe
-                    ? isDarkTheme ? Colors.teal.shade900 : Colors.green.shade100
+                    ? isDarkTheme
+                        ? Colors.deepPurple.shade700
+                        : Colors.deepPurple.shade200
                     : null,
                 child: Container(
                   padding: EdgeInsets.all(4),
